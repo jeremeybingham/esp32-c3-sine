@@ -1,6 +1,6 @@
 # ESP32-C3 Guitar Tone Generator
 
-A precision audio signal generator designed specifically for testing guitar effects pedals and audio equipment. Built on the ESP32-C3 microcontroller with serial control interface.
+Audio signal generator designed specifically for testing guitar effects pedals and audio equipment. Built on the ESP32-C3 microcontroller with serial control interface.
 
 ## Features
 
@@ -14,14 +14,25 @@ A precision audio signal generator designed specifically for testing guitar effe
 
 ## Hardware Requirements
 
-### ESP32-C3 Development Board
 - Any ESP32-C3 compatible development board
-- USB connection for power and programming
-- Minimum 4MB flash memory
+- (Optional) Breakout GPIO board
+- Perfboard
+- GPIO wires
+- R1: 2.2kΩ resistor (1/4W)
+- R2: 1kΩ resistor (1/4W)  
+- C1: 220nF ceramic capacitor
+- C2: 100nF ceramic capacitor
+- Bare wire to 1/4 audio jack modular connector
+- (Optional) 2x Block Terminal
 
-### Circuit Design Notes
+### Top View
+![Top View](images/top_view_labels.png "Top View")
 
-The system uses a two-stage low-pass filter to convert 80kHz PWM to smooth analog audio:
+We've assembled the output circuit on regular perfboard. It's a simple signal path which begins with stripping the opposite ends of two female GPIO wires and soldering them to a point on the board. The red wire connects to GPIO pin 2, and the green wire to GND. 
+
+Our ground path is built by simply bending the legs of the capacitors to create a continuous line. The signal path flows through the resistors and drains to ground via the capacitors as follows: 
+
+The system uses a two-stage low-pass filter to convert 80kHz PWM to smooth analog audio.
 
 1. **Stage 1**: 2.2kΩ + 220nF (fc ≈ 3.3kHz) - Removes PWM switching noise
 2. **Stage 2**: 1kΩ + 100nF (fc ≈ 1.6kHz) - Final smoothing
@@ -29,16 +40,16 @@ The system uses a two-stage low-pass filter to convert 80kHz PWM to smooth analo
 ### Audio Output Circuit
 ```
 ESP32 GPIO2 → 2.2kΩ → 220nF → 1kΩ → 100nF →  Audio Output
-              (R1)   (C1)   (R2)   (C2)    (1/4" Jack)
-                      ↓       ↓       ↓
-                     GND     GND     GND
+              (R1)    (C1)   (R2)    (C2)    (1/4" Jack)
+                       ↓       ↓       ↓
+                      GND     GND     GND
 ```
 
-**Component Specifications:**
-- R1: 2.2kΩ resistor (1/4W)
-- R2: 1kΩ resistor (1/4W)  
-- C1: 220nF ceramic capacitor
-- C2: 100nF ceramic capacitor
+(the output leg also includes a 2-terminal block wired directly to the output to accomadate other signal output tip styles.)
+
+### Bottom View
+![Bottom View](images/bottom_view_labels.png "Bottom View")
+
 
 ## Technical Specifications
 
@@ -52,20 +63,6 @@ ESP32 GPIO2 → 2.2kΩ → 220nF → 1kΩ → 100nF →  Audio Output
 | PWM Frequency | 80kHz | Well above audio range |
 | THD (Sine wave) | <0.5% | After analog filtering |
 
-## Installation
-
-### Arduino IDE Setup
-1. Install ESP32 board package in Arduino IDE
-2. Select **ESP32C3 Dev Module** as board
-3. Set upload speed to **921600** or **460800**
-
-### Library Dependencies
-No external libraries required - uses only built-in ESP32 functions.
-
-### Upload Instructions
-1. Connect ESP32-C3 via USB
-2. Hold BOOT button while pressing RESET (if needed for upload mode)
-3. Compile and upload the sketch
 
 ## Usage
 
@@ -127,3 +124,8 @@ note g3              - Set to G string frequency (196Hz)
 > sweep
 Execute 100Hz to 1000Hz sweep over 10 seconds
 ```
+
+
+## Future Plans
+
+- **SD Card Audio Output**: Add SPI SD card with pre-recorded tracks for music testing
