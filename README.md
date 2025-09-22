@@ -66,6 +66,9 @@ ESP32 GPIO2 → 2.2kΩ → 220nF → 1kΩ → 100nF →  Audio Output
 
 ## Usage
 
+### Uploading/Programming
+The script uses only standard Arduino modules; In Arduino IDE, ensure you've downloaded modules for the ESP32-C3 dev board and connect to the appropriate COM port to upload.
+
 ### Serial Interface
 Connect via serial monitor at **115200 baud** for control interface.
 
